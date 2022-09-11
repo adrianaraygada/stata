@@ -1,0 +1,81 @@
+**************************************************************
+*        INTRODUCTION TO R: N°1 (WORKING PROGRESS)           *
+**************************************************************
+* This is a do-file. Here we write commands/"orders" that Stata interprets and execute. 
+* When we write something after "*" means that it is only text. This is very useful to write down your own thoughts or interpretations. Also, yo can use * or /* */. 
+
+*There are some commands that are very useful in Stata: 
+*HELP("command"): will give you information about the command. 
+
+*Stata works by writing a command followed by a variable name, you can also use a "," to add some options. Options always comes after a comma. As Stata is case sensitive, its easier if all databases and variables are in lower case.
+
+*** SET WORKING DIRECTORY. When working with Stata it is important to set a directory. Setting the directory tells Stata in which folder on your computer your data is located and when your new data is going to be saved. 
+
+cd "C:\Users\user\Documents\Maestría\LUND\Econometrics I\Lab1"
+
+* 'cd' IS SHORT FOR 'CHANGE DIRECTORY'.  
+
+***What is an option? We can see this with an example. There are two ways of use "clear": as an option or as a command. 
+
+use lab1_2022
+*If you have made changes in lab1_2022, it will say "No, you have already changed your data I don't have it anymore". Will be an error message. If you make changes to the data, STATA will not allow you to load any new data without saving or clearing. 
+
+*In those cases you can us "clear" as a comand: 
+clear
+use lab1_2022
+*When you write "clear" it clears the changes you've made on the dataset or set all the process you have done. When you write "clear all" it will change everything you have done. 
+
+*Or, you can use "clear" as an options. "Clear" tells Stata to remove any data that may currently be in its memory before it opens the new file. 
+use lab1_2022, clear
+ 
+
+***START LOG FILE***
+* Log files are a way for you to record what you do while you work in Stata. It is useful to be able to just look in your log to see the results of the many regressions or cross-tabls you will run. 
+
+log using lab1.log
+log using "lab 1.log", replace
+* STATA will not accept file names containing spaces, hence the quotation marks in the command below
+* Replace tells stata that even if we already have that documment it can replace it. Otherwise if there is another document that have that name it won't create the document because it already has it. 
+
+clear
+
+*When you finishh to work you: 
+log close
+
+* '.log' files can be opened using notepad or similar programs. 
+
+
+***INSPECTING THE DATA SET***
+
+describe
+* 'describe' tells us some of the technical and practical details of our data: variable name, how it is stored in the computer and its definition. 
+* To see information on the storage types see: 
+help data type
+
+*There are two basic storage types: alphabetical and numerical 
+*'Strings" (str9) are alphabetical and often cannot be used for statistical analysis. 
+* There are several different numerical Storage types. 'byte', 'int' and 'long' are all integer storage types (i.e. no decimal places) 
+* 'float' and 'double' are decimal storage types. 
+
+* To more efficiently store your variables, simply run the command "compress". This will make that Stata does not allocate more memory to a variable than is necessary. When working with larger datasets, this can save a lot of space. (i.e. int -> byte). 
+compress
+
+* 'inspect' tells us a lot of useful information about a variable. The command also provides a small histogram. 
+inspect
+inspect age
+
+* We can also use 'summarize'to see statistical information (mean, std. dev, min, max). 
+summarize age
+
+* We can inspect each variables with the command "list". By typing 'list', Stata displays all of the data for the given variable on the screen. With a variable as "name" we can't do any kind of calculation, but we have some useful options 
+
+list var7
+list var7, sep(0) 
+list var7, sep(10) 
+list var7, sepby(home_owner)
+sort home_owner
+list var7 home_owner, sepby(home_owner)
+
+**************************************************************
+*                  MISSING INFO / INCOMPLETED                *
+**************************************************************
