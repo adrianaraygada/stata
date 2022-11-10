@@ -1,0 +1,61 @@
+****************************************************************************************************
+*                                      METHODS FOR CAUSAL INFERENCE                                *
+*             METHOD I. MULTIVARIATE ORDINARY LEAST SQUARE (OLS) REGRESSION                        *
+****************************************************************************************************
+
+* Ideally, we will work with experiments that uses randomized trials. However, most of the time social scientist will have to rely on non-experimental data
+to answer their research questions. 
+* Multivariate OLS regresion has some downsides: Omited Variable Bias (OVB), Selection Bias (SB), Bad Controls. 
+* When OVB and SB occurr, the Conditional Independence Assumption (CIA) is not fulfilled. 
+* Conditional Independence Assumption (CIA): Control and Treatment Groups are equal on average in terms of all relevant factors.
+
+*** SETTING THE WORKING DIRECTORY AND STARTING A LOG FILE***
+cd "C:\Users\user\Documents\MyFolder\MySubFolder\Method I"
+log using "method1.log", replace
+
+*** OMITED VARIABLE BIAS (OVB)***
+*And OVB occurs when a variable X2 is determinant of Y and correlated with at least with one included regressor (X1). 
+*If the Omitted Variable can be measured, we should include it as an additional regressor or a control variable (W).
+
+*** WAYS TO EXAMINE CORRELATIONS BETWEEN VARIABLES***
+* correlate, pwcorrelate, scatter (visually) and regression models. 
+* correlate and pwcorrelate produce Pearson's correlation coefficient and a test of significance (if specified). 
+* The PEARSON CORRELATION COEFICIENT (r) measures a linear correlation, the strength and direction of the relationship between two variables.
+It is a number between –1 and 1
+
+pwcorr y x1, star (.05)
+pwcorr y x2, star (.05)
+pwcorr x1 x2, star (.05)
+
+* To interprete the results, we need to focus on the sign (positive (+) correlation or negative (-) correlation), and if there is a star in the coefficient.  
+-0.30* is a negative correlated and significant. 
+
+*VISUAL CORRELATION* 
+
+scatter y x1, star (.05)
+scatter y x2, star (.05)
+scatter x1 x2, star (.05)
+
+*REGRESSION MODELS 
+* To install and store the model. 
+findit eststo
+
+regress y x1 // SHORT
+eststo m1
+regress y x1 x2 // LONG
+eststo m2
+esttab m1 m2
+
+* To interpret the results we need to compare the coefficients and see how they change when x2 is included.
+If there are very similar, then there are no OV. However, if they change to much there is an OV and, generally, we should included x2 in the model. 
+
+*HAUSMAN TEST. 
+*It is a test to see whether the beta coefficients of x1 in the two models (m1 and m2) are statistically the same. 
+* The Hyphothesis 0 is H0: Difference in coefficients not systematic
+* The coefficient we look at is Prob > chi2. If it is >0.10 we cannot rejet the null hypothesis 
+(that is what we expect: differences are not systemic / models are statistically the same)
+* If the probability is very close to cero (Prob > chi2 = 0.0000), the models are different from each other and we reject the null hypothesis 
+that there is no systemic difference in the coefficients of the models. 
+
+*IF AN OMITTED VARIABLE (X2) DOES NOT CORRELATE WITH THE INDEPENDENT VARIABLE (Y), OMMITTING IT WILL NOT BIAS THE RESULTS.
+* WHEN AND OMITTED VARIABLE (X2) CORRELATES WITH YOUR REGRESSOR (X1) AND THE OUTCOME (Y), SHOULD BE INCLUDED IN THE MODEL.
