@@ -79,3 +79,7 @@ list var7 home_owner, sepby(home_owner)
 **************************************************************
 *                  MISSING INFO / INCOMPLETED                *
 **************************************************************
+* * THERE ARE A FEW WAYS TO EXPORT TABLES FROM STATA.
+* SELECT THE TABLE IN THE OUTPUT WINDOW, RIGHT-CLICK, AND USE "COPY TABLE".
+* THEN YOU CAN PASTE THE TABLE INTO EXCEL FOR EDITING BEFORE EXPORTING IT TO WORD.
+* FOR EXPORTING EDITED TABLES DIRECTLY FROM STATA INTO WORD, LOOK UP FOR EXAMPLE THE COMMAND 'esttab'.
