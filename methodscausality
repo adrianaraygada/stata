@@ -12,6 +12,7 @@ to answer their research questions.
 *** SETTING THE WORKING DIRECTORY AND STARTING A LOG FILE***
 cd "C:\Users\user\Documents\MyFolder\MySubFolder\Method I"
 log using "method1.log", replace
+log close *at the end*
 
 *** OMITED VARIABLE BIAS (OVB)***
 *And OVB occurs when a variable X2 is determinant of Y and correlated with at least with one included regressor (X1). 
@@ -59,3 +60,50 @@ that there is no systemic difference in the coefficients of the models.
 
 *IF AN OMITTED VARIABLE (X2) DOES NOT CORRELATE WITH THE INDEPENDENT VARIABLE (Y), OMMITTING IT WILL NOT BIAS THE RESULTS.
 * WHEN AND OMITTED VARIABLE (X2) CORRELATES WITH YOUR REGRESSOR (X1) AND THE OUTCOME (Y), SHOULD BE INCLUDED IN THE MODEL.
+
+
+***SELECTION BIAS***
+* Lets imagine we have a set of data that focus on explore the relation between health insurance (hi) and health outcomes (ho). 
+* Before doing the regression analysis, we check for balances between groups. 
+* Our treatment would be if the they have higher education. 
+
+use data.dta, clear
+
+*MEN / WOMEN TABLES 
+tab hi if sex==0, sum (ho)
+tab hi if sex==1, sum (ho) 
+
+*MEN / WOMEN TABLES INCLUDING ALL VARIABLES
+tabstat ho x2 x3 x4 x5 x6 if sex==0, by(hi) stat(mean) format (%4.2f)
+tabstat ho x2 x3 x4 x5 x6 if sex==1, by(hi) stat(mean) format (%4.2f)
+*We can analise health insurance (hi) in each variable. Any of these variables have an impact on hi?
+*"Average health status (y) is higher among insured(hi==1) than uninsured(hi==0), higher among people with more years of education (x2). 
+Insured people (hi==1) in the survey are older (x3), have smaller families (x4), are more likely to be employed (x5) and white (x6)"
+
+*TTEST TO TEST IF DIFFERENCES FOUND IN TABLES ARE STATISTICALLY SIGNIFICANT
+ttest x2 if sex==0, by(hi) 
+ttest x2 if sex==1, by(hi) 
+* To check for balance we need to focus in the p.value.
+* Null hypothesis is that there is a significant difference between the groups, while the counter hypothesis is that the difference is zero. 
+* Null hypothesis is that the mean years of education are the same for insured and uninsured, 
+while the counter hypothesis is that the mean years of education are different.
+* If P. value (PR(|T| > |t|) = 0.000 or close to zero, then it is a difference between the variables. 
+* If it's large you can't really be sure that the difference is significant, thus there might be selection bias. 
+
+* REGRESSION HO ON HI
+reg ho hi, robust // robust standard errors deal with heteroskedasticity
+* When we regress those variables we find that "health insurance improves health status"; 
+however if we add controls and run a MULTIVARATE OLS REGRESSION results change
+
+reg ho hi, robust
+eststo m1
+reg ho hi sex x2 x3, robust
+eststo m2
+reg ho hi sex x2 x3 x4, robust
+eststo m3
+reg ho hi sex x2 x3 x4 x5, robust
+eststo m4
+reg ho hi sex x2 x3 x4 x5 x6, robust
+eststo m5
+reg ho hi sex x2 x3 x4 x5 x6 x7, robust 
+eststo m6
